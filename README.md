@@ -1,0 +1,1 @@
+[![Build Status](https://drone.trmckay.com/api/badges/tm/docker-rust-riscv64/status.svg)](https://drone.trmckay.com/tm/docker-rust-riscv64)
