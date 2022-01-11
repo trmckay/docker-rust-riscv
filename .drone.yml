@@ -3,7 +3,7 @@ kind: pipeline
 name: default
 
 steps:
-- name: docker  
+- name: docker
   image: plugins/docker
   settings:
     repo: trmckay/rust-riscv64
@@ -11,3 +11,4 @@ steps:
       from_secret: docker_username
     password:
       from_secret: docker_password
+
