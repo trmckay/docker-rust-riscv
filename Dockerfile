@@ -8,8 +8,7 @@ ENV RUSTUP_HOME=/usr/local/rustup \
     RUST_VERSION=1.57.0
 
 RUN set -eux && \
-    url="https://static.rust-lang.org/rustup/archive/1.24.3/x86_64-unknown-linux-gnu/rustup-init" && \
-    wget "$url" && \
+    wget "https://static.rust-lang.org/rustup/archive/1.24.3/x86_64-unknown-linux-gnu/rustup-init" && \
     chmod +x rustup-init && \
     ./rustup-init -y --no-modify-path --default-toolchain none && \
     rm rustup-init && \
@@ -18,8 +17,8 @@ RUN set -eux && \
     rustup target remove x86_64-unknown-linux-gnu  && \
     rustup target add riscv64gc-unknown-none-elf && \
     rustup target add riscv64gc-unknown-linux-gnu && \
-    apt update && \
-    apt install -y \
+    apt-get update && \
+    apt-get install -y \
         autoconf \
         automake \
         autotools-dev \
@@ -35,19 +34,32 @@ RUN set -eux && \
         libmpc-dev \
         libmpfr-dev \
         libtool \
+        ninja-build \
         patchutils \
         python3 \
-        qemu-system-riscv64 \
         texinfo \
         zlib1g-dev && \
-    apt clean && \
-    git clone https://github.com/riscv-collab/riscv-gnu-toolchain /src/riscv-gnu-toolchain && \
-    cd /src/riscv-gnu-toolchain && \
+    apt-get clean && \
+    git clone https://github.com/riscv-collab/riscv-gnu-toolchain && \
+    cd riscv-gnu-toolchain && \
     ./configure --prefix=/usr/local --enable-multilib && \
-    make -j $(nproc) && \
-    rm -rf /src/riscv-gnu-toolchain && \
-    apt remove -y \
+    make -j$(nproc) && \
+    cd .. && \
+    rm -rf riscv-gnu-toolchain && \
+    git clone https://github.com/qemu/qemu && \
+    cd qemu && \
+    git checkout v6.2.0 && \
+    ./configure --target-list=riscv64-softmmu && \
+    make -j$(nproc) && \
+    make install && \
+    cd .. && \
+    rm -rf qemu && \
+    apt-get remove -y \
+        autotools-dev \
         libexpat-dev \
         libgmp-dev \
         libmpc-dev \
-        libmpfr-dev
+        libmpfr-dev \
+        zlib1g-dev && \
+    apt-get autoremove -y && \
+    apt-get clean
