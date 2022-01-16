@@ -29,6 +29,7 @@ RUN set -eux && \
         flex \
         gawk \
         gperf \
+        jq \
         libexpat-dev \
         libgmp-dev \
         libmpc-dev \
