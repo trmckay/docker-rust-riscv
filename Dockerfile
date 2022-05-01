@@ -2,11 +2,7 @@
 
 FROM rust:buster
 
-RUN rustup target add riscv64gc-unknown-none-elf && \
-    rustup target add riscv64gc-unknown-linux-gnu && \
-    rustup target remove x86_64-unknown-linux-gnu  && \
-    rustup component add rustfmt && \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -y \
         autoconf \
         automake \
@@ -18,7 +14,6 @@ RUN rustup target add riscv64gc-unknown-none-elf && \
         flex \
         gawk \
         gperf \
-        jq \
         libexpat-dev \
         libgmp-dev \
         libmpc-dev \
