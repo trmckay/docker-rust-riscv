@@ -1,50 +1,25 @@
-# Derived from: https://github.com/rust-lang/docker-rust
+FROM ubuntu:focal
 
-FROM rust:buster
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
     apt-get install -y \
-        autoconf \
-        automake \
-        autotools-dev \
-        bc \
-        bison \
-        build-essential \
         curl \
-        flex \
-        gawk \
-        gperf \
-        libexpat-dev \
-        libgmp-dev \
-        libmpc-dev \
-        libmpfr-dev \
-        libtool \
-        ninja-build \
-        patchutils \
-        python3 \
-        texinfo \
-        zlib1g-dev && \
-    apt-get clean && \
-    git clone https://github.com/riscv-collab/riscv-gnu-toolchain && \
-    cd riscv-gnu-toolchain && \
-    ./configure --prefix=/usr/local --enable-multilib && \
-    make -j$(nproc) && \
-    cd .. && \
-    rm -rf riscv-gnu-toolchain && \
-    git clone https://github.com/qemu/qemu && \
-    cd qemu && \
-    git checkout v6.2.0 && \
-    ./configure --target-list=riscv64-softmmu && \
-    make -j$(nproc) && \
-    make install && \
-    cd .. && \
-    rm -rf qemu && \
-    apt-get remove -y \
-        autotools-dev \
-        libexpat-dev \
-        libgmp-dev \
-        libmpc-dev \
-        libmpfr-dev \
-        zlib1g-dev && \
+        build-essential \
+        binutils-riscv64-linux-gnu \
+        gcc-riscv64-linux-gnu \
+        binutils-riscv64-unknown-elf \
+        gcc-riscv64-unknown-elf \
+        qemu-system-misc && \
     apt-get autoremove -y && \
     apt-get clean
+
+RUN adduser rust
+RUN mkdir -p /src
+RUN chown rust:rust /src
+
+USER rust
+WORKDIR /src
+
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain none
+ENV PATH /home/rust/.cargo/bin:$PATH
