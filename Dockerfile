@@ -1,6 +1,6 @@
 FROM ubuntu:focal
 
-ARG DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
     apt-get install -y \
@@ -14,12 +14,15 @@ RUN apt-get update && \
     apt-get autoremove -y && \
     apt-get clean
 
-RUN adduser rust
-RUN mkdir -p /src
-RUN chown rust:rust /src
+RUN mkdir -p /opt/rust
 
-USER rust
-WORKDIR /src
+ENV RUSTUP_HOME /opt/rust/rustup
+ENV CARGO_HOME /opt/rust/cargo
+ENV PATH /opt/rust/cargo/bin:$PATH
 
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain none
-ENV PATH /home/rust/.cargo/bin:$PATH
+
+RUN mkdir -p /src
+RUN chown nobody:nogroup /src
+
+WORKDIR /src
