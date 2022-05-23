@@ -1,3 +1,6 @@
+- [dockerhub:trmckay/rust-riscv64](https://hub.docker.com/repository/docker/trmckay/rust-riscv64/)
+- [github:trmckay/docker-rust-riscv64](https://github.com/trmckay/docker-rust-riscv64)
+
 Provides Rustup, `riscv64-unknown-elf-` and `riscv64-linux-gnu-` cross-compilers, and QEMU for rv64.
 
 ```bash
