@@ -15,6 +15,8 @@ RUN apt-get update && \
     apt-get clean
 
 RUN mkdir -p /opt/rust
+RUN chmod 0777 /opt/rust
+RUN chown nobody:nogroup /opt/rust
 
 ENV RUSTUP_HOME /opt/rust/rustup
 ENV CARGO_HOME /opt/rust/cargo
