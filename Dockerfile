@@ -1,8 +1,12 @@
 FROM ubuntu:focal
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive \
+    RUSTUP_HOME=/usr/local/rustup \
+    CARGO_HOME=/usr/local/cargo \
+    PATH=/usr/local/cargo/bin:$PATH
 
-RUN apt-get update && \
+RUN set -eux && \
+    apt-get update && \
     apt-get install -y \
         curl \
         build-essential \
@@ -12,19 +16,15 @@ RUN apt-get update && \
         gcc-riscv64-unknown-elf \
         qemu-system-misc && \
     apt-get autoremove -y && \
-    apt-get clean
-
-RUN mkdir -p /opt/rust
-RUN chmod 0777 /opt/rust
-RUN chown nobody:nogroup /opt/rust
-
-ENV RUSTUP_HOME /opt/rust/rustup
-ENV CARGO_HOME /opt/rust/cargo
-ENV PATH /opt/rust/cargo/bin:$PATH
-
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain none
+    apt-get clean && \
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path && \
+    chmod -R a+w $RUSTUP_HOME $CARGO_HOME && \
+    rustup target add riscv64gc-unknown-linux-gnu && \
+    rustup target add riscv64gc-unknown-none-elf && \
+    rustup target add riscv64imac-unknown-none-elf && \
+    rustup target add riscv32i-unknown-none-elf && \
+    rustup target add riscv32imac-unknown-none-elf && \
+    rustup target add riscv32imc-unknown-none-elf
 
 RUN mkdir -p /src
-RUN chown nobody:nogroup /src
-
 WORKDIR /src
