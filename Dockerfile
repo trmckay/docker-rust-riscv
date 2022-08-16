@@ -14,6 +14,7 @@ RUN set -eux && \
         gcc-riscv64-linux-gnu \
         binutils-riscv64-unknown-elf \
         gcc-riscv64-unknown-elf \
+        gdb-multiarch \
         qemu-system-misc && \
     apt-get autoremove -y && \
     apt-get clean && \
